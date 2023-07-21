@@ -6,7 +6,7 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:36:42 by claatkin          #+#    #+#             */
-/*   Updated: 2023/07/21 13:32:03 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/07/21 17:43:07 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,41 @@ static char	*clear_buffer(char *buffer)
 static char	*move_buffer_to_next_line(int fd, char *buffer, char *buffer_start)
 {
 	int	buffer_length;
-	
+
 	if (*buffer == '\0')
 	{
-		
+		buffer = buffer_start;
+		buffer_length = read(fs, buffer, BUFFER_SIZE);
+		if (buffer_length < 1)
+		{
+			clear_buffer(buffer_start);
+			return (NULL);
+		}
+		buffer[buffer_length] = '\0';
 	}
-	// Una vez hayas pegado la parte del buffer que llega hasta \n, dentro del buffer tiene que quedar lo que pueda hacer falta para la siguiente línea Entones moveria todo lo que haya SI EXISTE detras de un \n al principio del buffer
+	return (buffer);
+}
+
+static char	*buffer_init(int fd, char *buffer, char **buffer_start)
+{
+	if (fd < 0 || fd > 511 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
+	{
+		if (fd >= 0 && fd <= 511)
+		{
+			buffer = clear_buffer(*buffer_start);
+			*buffer_start = NULL;
+		}
+		return (NULL);
+	}
+	if (!buffer)
+	{
+		buffer = malloc((BUFFER_SIZE + 1) * (sizeof(char)));
+		if (!buffer)
+			return (NULL);
+		*buffer = '\0';
+		*buffer_start = buffer;
+	}
+	return (buffer);
 }
 
 char	*get_next_line(int fd)
@@ -91,13 +120,13 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int main(void)
+/*int main(void)
 {
 	int n;
 	char *buff;
 	char path[] = "claudia.txt";
-	
+
 	n = open(path, O_RDONLY);
 	buff = get_next_line(n);
 	printf("\n\n%s\n\n,buff");
-}
+}*/
