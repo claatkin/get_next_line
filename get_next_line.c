@@ -6,21 +6,13 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:36:42 by claatkin          #+#    #+#             */
-/*   Updated: 2023/07/21 17:43:07 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/09/12 19:11:58 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*fill_buffer(int fd, char *buffer)
-{
-	int	intiewinkie;
-
-	intiewinkie = read(fd, buffer, BUFFER_SIZE);
-	return (intiewinkie);
-}
-
-static char	*append_buffer(char **line, char *buffer)
+char	*append_buffer(char **line, char *buffer)
 {
 	int		i;
 	int		line_length;
@@ -36,12 +28,13 @@ static char	*append_buffer(char **line, char *buffer)
 		i++;
 	if (i == 0)
 		return (NULL);
-	*aux = *line;
-	*line = ft_strjoin(*line, *buffer);
-	*line = *aux;
+	aux = *line;
+	*line = ft_strjoin(*line, buffer);
+	*line = aux;
+	return (*line);
 }
 
-static char	*clear_buffer(char *buffer)
+char	*clear_buffer(char *buffer)
 {
 	int	i;
 
@@ -58,14 +51,14 @@ static char	*clear_buffer(char *buffer)
 	return (NULL);
 }
 
-static char	*move_buffer_to_next_line(int fd, char *buffer, char *buffer_start)
+char	*move_buffer_to_next_line(int fd, char *buffer, char *buffer_start)
 {
 	int	buffer_length;
 
 	if (*buffer == '\0')
 	{
 		buffer = buffer_start;
-		buffer_length = read(fs, buffer, BUFFER_SIZE);
+		buffer_length = read(fd, buffer, BUFFER_SIZE);
 		if (buffer_length < 1)
 		{
 			clear_buffer(buffer_start);
@@ -76,7 +69,7 @@ static char	*move_buffer_to_next_line(int fd, char *buffer, char *buffer_start)
 	return (buffer);
 }
 
-static char	*buffer_init(int fd, char *buffer, char **buffer_start)
+char	*buffer_init(int fd, char *buffer, char **buffer_start)
 {
 	if (fd < 0 || fd > 511 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 	{
@@ -102,8 +95,10 @@ char	*get_next_line(int fd)
 {
 	static char	*buffer;
 	char		*line;
+	char		*buffer_start;
 
 	line = NULL;
+	buffer_start = NULL;
 	if (buffer == NULL)
 	{
 		buffer = malloc(BUFFER_SIZE + 1);
@@ -114,8 +109,9 @@ char	*get_next_line(int fd)
 	{
 		if (*buffer == '\0')
 			fill_buffer(fd, buffer);
-		append_buffer();
-		move_buffer_to_next_line();
+		buffer_init(fd, buffer, &buffer_start);
+		move_buffer_to_next_line(fd, buffer, buffer_start);
+		append_buffer(&line, buffer);
 	}
 	return (line);
 }

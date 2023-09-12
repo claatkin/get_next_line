@@ -6,11 +6,19 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:50:01 by claatkin          #+#    #+#             */
-/*   Updated: 2023/07/19 16:31:51 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/09/12 18:56:31 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*fill_buffer(int fd, char *buffer)
+{
+	int	intiewinkie;
+
+	intiewinkie = read(fd, buffer, BUFFER_SIZE);
+	return (buffer);
+}
 
 char	*ft_strchr(const char *s, int c)
 {
