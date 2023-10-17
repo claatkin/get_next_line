@@ -6,20 +6,30 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:50:01 by claatkin          #+#    #+#             */
-/*   Updated: 2023/09/12 18:56:31 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/10/17 17:19:03 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*fill_buffer(int fd, char *buffer)
+/* lee datos desde el descriptor de archivo al buffer */
+char	*fill_buffer(int fd, char *buffer, char *buffer_start)
 {
 	int	intiewinkie;
 
 	intiewinkie = read(fd, buffer, BUFFER_SIZE);
+	if (intiewinkie < 1)
+	{
+		clear_buffer(buffer_start);
+		free(buffer_start);
+		buffer_start = NULL;
+		free(buffer);
+		buffer = NULL;
+	}
 	return (buffer);
 }
 
+/* busca un carácter en una cadena */
 char	*ft_strchr(const char *s, int c)
 {
 	int	i;
@@ -34,6 +44,7 @@ char	*ft_strchr(const char *s, int c)
 	return (&((char *)s)[i]);
 }
 
+/* calcula la longitud de una cadena */
 int	ft_strlen(const char *s)
 {
 	int	i;
@@ -46,21 +57,36 @@ int	ft_strlen(const char *s)
 	return (i);
 }
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+/* extrae una subcadena de una cadena */
+char	*ft_substr(const char *s, unsigned int start, size_t len)
 {
-	size_t	i;
+	char			*sub;
+	size_t			i;
+	unsigned int	slen;
 
-	i = 0;
-	if (dst == 0 && src == 0)
-		return (0);
-	while (i < n)
+	if (!s)
+		return (NULL);
+	slen = ft_strlen(s);
+	if (start >= slen)
 	{
-		((unsigned char *)dst)[i] = ((unsigned char *)src)[i];
-		i++;
+		sub = malloc(1);
+		*sub = '\0';
+		return (sub);
+		free(malloc);
 	}
-	return (((unsigned char *)dst));
+	if (len > ((slen - start) + 1))
+		len = slen - start + 1;
+	sub = malloc ((len + 1) * (sizeof(char)));
+	if (!sub)
+		return (NULL);
+	i = -1;
+	while (++i < len && s[start + i])
+		sub[i] = s[start + i];
+	sub[i] = '\0';
+	return (sub);
 }
 
+/* concatena dos cadenas */
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char			*newstring;
