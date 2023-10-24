@@ -6,26 +6,20 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:50:01 by claatkin          #+#    #+#             */
-/*   Updated: 2023/10/17 17:19:03 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/10/24 12:35:29 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /* lee datos desde el descriptor de archivo al buffer */
-char	*fill_buffer(int fd, char *buffer, char *buffer_start)
+char	*fill_buffer(int fd, char *buffer)
 {
 	int	intiewinkie;
 
 	intiewinkie = read(fd, buffer, BUFFER_SIZE);
 	if (intiewinkie < 1)
-	{
-		clear_buffer(buffer_start);
-		free(buffer_start);
-		buffer_start = NULL;
-		free(buffer);
-		buffer = NULL;
-	}
+		buffer = clear_buffer(buffer);
 	return (buffer);
 }
 

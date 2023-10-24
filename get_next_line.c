@@ -6,7 +6,7 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:36:42 by claatkin          #+#    #+#             */
-/*   Updated: 2023/10/17 17:21:20 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/10/24 15:53:10 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,29 +57,40 @@ char	*clear_buffer(char *buffer)
 }
 
 /* mueve el buffer a la siguiente línea */
-char	*move_buffer_to_next_line(char *buffer, char *buffer_start)
+char	*move_buffer_to_next_line(char *buffer)
 {
-	while (*buffer != '\n' && *buffer != '\0')
-		buffer++;
-	if (*buffer == '\n')
-		buffer++;
-	else
+	int	i;
+	int	j;
+
+	i = 0;
+	while (buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	if (buffer[i] == '\n')
 	{
-		buffer = buffer_start;
-		*buffer = '\0';
+		i++;
+		j = 0;
+		while (buffer[i] != '\0')
+		{
+			buffer[j] = buffer[i];
+			i++;
+			j++;
+		}
+		buffer[j] = '\0';
 	}
+	else
+		buffer[0] = '\0';
 	return (buffer);
 }
 
 /* inicializa el buffer */
-char	*buffer_init(int fd, char *buffer, char **buffer_start)
+char	*buffer_init(int fd, char *buffer)
 {
 	if (fd < 0 || fd > 511 || BUFFER_SIZE < 1 || read(fd, 0, 0) < 0)
 	{
 		if (fd >= 0 && fd <= 511)
 		{
-			buffer = clear_buffer(*buffer_start);
-			*buffer_start = NULL;
+			buffer = clear_buffer(buffer);
+			buffer = NULL;
 		}
 		return (NULL);
 	}
@@ -89,7 +100,6 @@ char	*buffer_init(int fd, char *buffer, char **buffer_start)
 		if (!buffer)
 			return (NULL);
 		*buffer = '\0';
-		*buffer_start = buffer;
 	}
 	return (buffer);
 }
@@ -99,27 +109,19 @@ char	*get_next_line(int fd)
 {
 	static char	*buffer;
 	char		*line;
-	static char	*buffer_start;
 
 	line = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	buffer = buffer_init(fd, buffer, &buffer_start);
+	buffer = buffer_init(fd, buffer);
 	if (!buffer)
 		return (NULL);
 	while (!line || !(ft_strchr(line, '\n')))
 	{
 		if (*buffer == '\0')
-		{
-			fill_buffer(fd, buffer, buffer_start);
-			if (line && *line == '\0')
-			{
-				free(line);
-				line = NULL;
-			}
-		}
+			buffer = fill_buffer(fd, buffer);
 		else
 			return (NULL);
 		line = append_buffer(line, buffer);
-		move_buffer_to_next_line(buffer, buffer_start);
+		buffer = move_buffer_to_next_line(buffer);
 	}
 	return (line);
 }
