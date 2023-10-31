@@ -6,7 +6,7 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:36:42 by claatkin          #+#    #+#             */
-/*   Updated: 2023/10/24 15:53:10 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:29:07 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ char	*append_buffer(char *line, char *buffer)
 	line_length = 0;
 	if (line)
 		line_length = ft_strlen(line);
+	/*else
+	{
+		line = malloc(1);
+		*line = '\0';
+	}*/
 	while (*(buffer + i) && *(buffer + i) != '\n')
 		i++;
 	if (*(buffer + i) == '\n')
@@ -110,7 +115,7 @@ char	*get_next_line(int fd)
 	static char	*buffer;
 	char		*line;
 
-	line = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	line = NULL;
 	buffer = buffer_init(fd, buffer);
 	if (!buffer)
 		return (NULL);
@@ -125,6 +130,31 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
+/* while (1) */
+/*char	*get_next_line(int fd)
+{
+	static char	*buffer;
+	char		*line;
+
+	line = NULL;
+	buffer = buffer_init(fd, buffer);
+	if (!buffer)
+		return (NULL);
+	while (!line || !(ft_strchr(line, '\n')))
+	{
+		if (*buffer == '\0')
+			buffer = fill_buffer(fd, buffer);
+		if (!buffer)
+			return (NULL);
+		line = append_buffer(line, buffer);
+		buffer = move_buffer_to_next_line(buffer);
+		if (line && ft_strchr(line, '\n'))
+			break ;
+	}
+	if (!line)
+		return (NULL);
+	return (line);
+}*/
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -142,4 +172,5 @@ int main(void)
 		buff = get_next_line(n);
 		printf("\n\n%s\n\n", buff);
 	}
+	close(n);
 }
