@@ -6,7 +6,7 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:50:01 by claatkin          #+#    #+#             */
-/*   Updated: 2023/10/31 13:25:14 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/11/13 18:50:40 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 		sub = malloc(1);
 		*sub = '\0';
 		return (sub);
-		free(malloc);
 	}
 	if (len > ((slen - start) + 1))
 		len = slen - start + 1;

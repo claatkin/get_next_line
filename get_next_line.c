@@ -6,7 +6,7 @@
 /*   By: claatkin <claatkin@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 15:36:42 by claatkin          #+#    #+#             */
-/*   Updated: 2023/10/31 13:29:07 by claatkin         ###   ########.fr       */
+/*   Updated: 2023/11/15 19:03:38 by claatkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,8 @@ char	*append_buffer(char *line, char *buffer)
 	line_length = 0;
 	if (line)
 		line_length = ft_strlen(line);
-	/*else
-	{
+	else
 		line = malloc(1);
-		*line = '\0';
-	}*/
 	while (*(buffer + i) && *(buffer + i) != '\n')
 		i++;
 	if (*(buffer + i) == '\n')
@@ -110,7 +107,7 @@ char	*buffer_init(int fd, char *buffer)
 }
 
 /* es la función principal que lee líneas desde el descriptor de archivo */
-char	*get_next_line(int fd)
+/*char	*get_next_line(int fd)
 {
 	static char	*buffer;
 	char		*line;
@@ -127,11 +124,12 @@ char	*get_next_line(int fd)
 			return (NULL);
 		line = append_buffer(line, buffer);
 		buffer = move_buffer_to_next_line(buffer);
+		return (line);
 	}
 	return (line);
-}
-/* while (1) */
-/*char	*get_next_line(int fd)
+}*/
+
+char	*get_next_line(int fd)
 {
 	static char	*buffer;
 	char		*line;
@@ -150,13 +148,14 @@ char	*get_next_line(int fd)
 		buffer = move_buffer_to_next_line(buffer);
 		if (line && ft_strchr(line, '\n'))
 			break ;
+		return (line);
 	}
 	if (!line)
 		return (NULL);
 	return (line);
-}*/
+}
 
-#include <stdio.h>
+/*#include <stdio.h>
 #include <fcntl.h>
 
 int main(void)
@@ -173,4 +172,4 @@ int main(void)
 		printf("\n\n%s\n\n", buff);
 	}
 	close(n);
-}
+}*/
